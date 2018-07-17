@@ -1,6 +1,5 @@
 // @flow
 
-import Texture from './texture';
 import Color from '../style-spec/util/color';
 import DepthMode from '../gl/depth_mode';
 import StencilMode from '../gl/stencil_mode';
@@ -9,6 +8,7 @@ import {
     fillExtrusionPatternUniformValues,
     extrusionTextureUniformValues
 } from './program/fill_extrusion_program';
+import {drawToOffscreenFramebuffer, drawOffscreenTexture} from './offscreen';
 
 import type Painter from './painter';
 import type SourceCache from '../source/source_cache';
@@ -24,7 +24,7 @@ function draw(painter: Painter, source: SourceCache, layer: FillExtrusionStyleLa
     }
 
     if (painter.renderPass === 'offscreen') {
-        drawToExtrusionFramebuffer(painter, layer);
+        drawToOffscreenFramebuffer(painter, layer);
 
         const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]),
             stencilMode = StencilMode.disabled,
@@ -33,55 +33,8 @@ function draw(painter: Painter, source: SourceCache, layer: FillExtrusionStyleLa
         drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMode, colorMode);
 
     } else if (painter.renderPass === 'translucent') {
-        drawExtrusionTexture(painter, layer);
+        drawOffscreenTexture(painter, layer, layer.paint.get('fill-extrusion-opacity'));
     }
-}
-
-function drawToExtrusionFramebuffer(painter, layer) {
-    const context = painter.context;
-    const gl = context.gl;
-
-    let renderTarget = layer.viewportFrame;
-
-    if (painter.depthRboNeedsClear) {
-        painter.setupOffscreenDepthRenderbuffer();
-    }
-
-    if (!renderTarget) {
-        const texture = new Texture(context, {width: painter.width, height: painter.height, data: null}, gl.RGBA);
-        texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-
-        renderTarget = layer.viewportFrame = context.createFramebuffer(painter.width, painter.height);
-        renderTarget.colorAttachment.set(texture.texture);
-    }
-
-    context.bindFramebuffer.set(renderTarget.framebuffer);
-    renderTarget.depthAttachment.set(painter.depthRbo);
-
-    if (painter.depthRboNeedsClear) {
-        context.clear({ depth: 1 });
-        painter.depthRboNeedsClear = false;
-    }
-
-    context.clear({ color: Color.transparent });
-}
-
-function drawExtrusionTexture(painter, layer) {
-    const renderedTexture = layer.viewportFrame;
-    if (!renderedTexture) return;
-
-    const context = painter.context;
-    const gl = context.gl;
-
-    context.activeTexture.set(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, renderedTexture.colorAttachment.get());
-
-    painter.useProgram('extrusionTexture').draw(context, gl.TRIANGLES,
-        DepthMode.disabled, StencilMode.disabled,
-        painter.colorModeForRenderPass(),
-        extrusionTextureUniformValues(painter, layer, 0),
-        layer.id, painter.viewportBuffer, painter.quadTriangleIndexBuffer,
-        painter.viewportSegments, layer.paint, painter.transform.zoom);
 }
 
 function drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMode, colorMode) {

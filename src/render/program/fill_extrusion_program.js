@@ -131,7 +131,7 @@ const fillExtrusionPatternUniformValues = (
 
 const extrusionTextureUniformValues = (
     painter: Painter,
-    layer: FillExtrusionStyleLayer,
+    opacity: number,
     textureUnit: number
 ): UniformValues<ExtrusionTextureUniformsType> => {
     const matrix = mat4.create();
@@ -143,7 +143,7 @@ const extrusionTextureUniformValues = (
         'u_matrix': matrix,
         'u_world': [gl.drawingBufferWidth, gl.drawingBufferHeight],
         'u_image': textureUnit,
-        'u_opacity': layer.paint.get('fill-extrusion-opacity')
+        'u_opacity': opacity
     };
 };
 
