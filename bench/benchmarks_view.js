@@ -424,6 +424,7 @@ class BenchmarksTable extends React.Component {
 
 const benchmarks = [];
 const filter = window.location.hash.substr(1);
+
 let finished = false;
 let promise = Promise.resolve();
 

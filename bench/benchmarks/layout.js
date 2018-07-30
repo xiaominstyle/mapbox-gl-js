@@ -86,6 +86,7 @@ export default class Layout extends Benchmark {
 
     bench(getGlyphs: Function = (params, callback) => callback(null, this.glyphs[JSON.stringify(params)]),
           getImages: Function = (params, callback) => callback(null, this.icons[JSON.stringify(params)])) {
+
         const actor = {
             send(action, params, callback) {
                 setTimeout(() => {

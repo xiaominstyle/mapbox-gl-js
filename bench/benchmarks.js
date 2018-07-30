@@ -50,14 +50,14 @@ function register(Benchmark) {
 import Layout from './benchmarks/layout';
 import LayoutDDS from './benchmarks/layout_dds';
 import Paint from './benchmarks/paint';
+import PaintStates from './benchmarks/paint_states';
+import LayerBenchmarks from './benchmarks/layers';
+import Load from './benchmarks/map_load';
 import Validate from './benchmarks/style_validate';
 import StyleLayerCreate from './benchmarks/style_layer_create';
 import QueryPoint from './benchmarks/query_point';
 import QueryBox from './benchmarks/query_box';
 import ExpressionBenchmarks from './benchmarks/expressions';
-import PaintStates from './benchmarks/paint_states';
-import LayerBenchmarks from './benchmarks/layers';
-import Load from './benchmarks/map_load';
 import FilterCreate from './benchmarks/filter_create';
 import FilterEvaluate from './benchmarks/filter_evaluate';
 
