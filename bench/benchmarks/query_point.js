@@ -4,7 +4,7 @@ import createMap from '../lib/create_map';
 
 const width = 1024;
 const height = 768;
-let zooms = [4, 8, 11, 13, 15, 17];
+const zooms = [4, 8, 11, 13, 15, 17];
 
 const points = [];
 const d = 4;
@@ -19,33 +19,33 @@ for (let x = 0; x < d; x++) {
 
 export default class QueryPoint extends Benchmark {
     setup() {
-      let promises = [];
-      if (this.locations) {
-        promises = this.locations.map(location => {
-          return createMap({
-            zoom: location.zoom,
-            width,
-            height,
-            center: location.center,
-            style: this.styleURL
-          });
-        });
-      } else {
-        promises = zooms.map(zoom => {
-          return createMap({
-            zoom,
-            width,
-            height,
-            center: [-77.032194, 38.912753],
-            style: this.styleURL
-          });
-        });
-      }
+        let promises = [];
+        if (this.locations) {
+            promises = this.locations.map(location => {
+                return createMap({
+                    zoom: location.zoom,
+                    width,
+                    height,
+                    center: location.center,
+                    style: this.styleURL
+                });
+            });
+        } else {
+            promises = zooms.map(zoom => {
+                return createMap({
+                    zoom,
+                    width,
+                    height,
+                    center: [-77.032194, 38.912753],
+                    style: this.styleURL
+                });
+            });
+        }
 
-      return Promise.all(promises)
-      .then(maps => {
-          this.maps = maps;
-      });
+        return Promise.all(promises)
+            .then(maps => {
+                this.maps = maps;
+            });
     }
 
     bench() {

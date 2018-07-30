@@ -8,31 +8,31 @@ const zooms = [4, 8, 11, 13, 15, 17];
 
 export default class Paint extends Benchmark {
     setup() {
-      let promises = [];
-      if (this.locations) {
-        promises.push(createMap({
-          zoom: this.locations.zoom,
-          width,
-          height,
-          center: this.locations.center,
-          style: this.styleURL
-        }));
-      } else {
-        promises = zooms.map(zoom => {
-          return createMap({
-            zoom,
-            width,
-            height,
-            center: [-77.032194, 38.912753],
-            style: this.styleURL
-          });
-        });
-      }
+        let promises = [];
+        if (this.locations) {
+            promises.push(createMap({
+                zoom: this.locations.zoom,
+                width,
+                height,
+                center: this.locations.center,
+                style: this.styleURL
+            }));
+        } else {
+            promises = zooms.map(zoom => {
+                return createMap({
+                    zoom,
+                    width,
+                    height,
+                    center: [-77.032194, 38.912753],
+                    style: this.styleURL
+                });
+            });
+        }
 
-      return Promise.all(promises)
-      .then(maps => {
-          this.maps = maps;
-      });
+        return Promise.all(promises)
+            .then(maps => {
+                this.maps = maps;
+            });
     }
 
     bench() {

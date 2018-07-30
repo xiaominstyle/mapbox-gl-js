@@ -1,6 +1,5 @@
 
 import Benchmark from '../lib/benchmark';
-import { accessToken } from '../lib/parameters';
 import validateStyle from '../../src/style-spec/validate_style.min';
 import { normalizeStyleURL } from '../../src/util/mapbox';
 
