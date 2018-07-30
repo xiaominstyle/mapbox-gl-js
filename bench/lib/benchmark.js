@@ -1,5 +1,6 @@
 // @flow
-
+import { OverscaledTileID } from '../../src/source/tile_id';
+import type { LngLatLike } from '../../src/geo/lng_lat';
 // According to https://developer.mozilla.org/en-US/docs/Web/API/Performance/now,
 // performance.now() should be accurate to 0.005ms. Set the minimum running
 // time for a single measurement at 5ms, so that the error due to timer
@@ -11,8 +12,18 @@ export type Measurement = {
     time: number
 };
 
+type Location = {
+    description: string,
+    tileID: Array<OverscaledTileID>,
+    zoom: number,
+    center: LngLatLike
+};
+
 class Benchmark {
-    constructor(styleURL, locations) {
+    styleURL: string;
+    locations: ?Location;
+
+    constructor(styleURL: string, locations: ?Location) {
         this.styleURL = styleURL;
         this.locations = locations;
         this._measureAsync = this._measureAsync.bind(this);

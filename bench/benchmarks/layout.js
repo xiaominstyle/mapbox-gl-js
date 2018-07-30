@@ -25,9 +25,6 @@ export default class Layout extends Benchmark {
 
     tileIDs(): Array<OverscaledTileID> {
         return [
-            // instead of averaging these out, run bench against each zoom level
-            // need to determine comprehensive set of zooms and locations
-            // each zoom level should run against a few locations and report its findings individually
             new OverscaledTileID(12, 0, 12, 655, 1583),
             new OverscaledTileID(8, 0, 8, 40, 98),
             new OverscaledTileID(4, 0, 4, 3, 6),
@@ -49,7 +46,7 @@ export default class Layout extends Benchmark {
         return fetch(normalizeSourceURL(sourceURL))
             .then(response => response.json())
             .then((tileJSON: TileJSON) => {
-                const tileIDs = this.locations && this.locations.tileID ? [this.locations.tileID] : this.tileIDs();
+                const tileIDs = this.locations && this.locations.tileID ? this.locations.tileID : this.tileIDs();
                 return Promise.all(tileIDs.map(tileID => {
                     return fetch((normalizeTileURL(tileID.canonical.url(tileJSON.tiles))))
                         .then(response => response.arrayBuffer())
@@ -107,8 +104,8 @@ export default class Layout extends Benchmark {
             promise = promise.then(() => {
                 const zoom = this.locations && this.locations.zoom ? this.locations.zoom : tileID.overscaledZ;
                 const workerTile = new WorkerTile({
-                    tileID,
-                    zoom,
+                    tileID: tileID,
+                    zoom: zoom,
                     tileSize: 512,
                     overscaling: 1,
                     showCollisionBoxes: false,
