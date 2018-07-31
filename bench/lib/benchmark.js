@@ -21,9 +21,9 @@ type Location = {
 
 class Benchmark {
     styleURL: string;
-    locations: ?Location;
+    locations: ?Array<Location>;
 
-    constructor(styleURL: string, locations: ?Location) {
+    constructor(styleURL: string, locations: ?Array<Location>) {
         this.styleURL = styleURL;
         this.locations = locations;
         this._measureAsync = this._measureAsync.bind(this);

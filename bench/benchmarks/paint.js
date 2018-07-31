@@ -10,11 +10,12 @@ export default class Paint extends Benchmark {
     setup() {
         let promises = [];
         if (this.locations) {
+            const location = this.locations[0];
             promises.push(createMap({
-                zoom: this.locations.zoom,
+                zoom: location.zoom,
                 width,
                 height,
-                center: this.locations.center,
+                center: location.center,
                 style: this.styleURL
             }));
         } else {

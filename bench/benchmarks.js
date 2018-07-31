@@ -31,7 +31,7 @@ function register(Benchmark) {
                     if (!window.mapboxglBenchmarks[Benchmark.name][descriptor]) {
                         window.mapboxglBenchmarks[Benchmark.name][descriptor] = {};
                     }
-                    window.mapboxglBenchmarks[Benchmark.name][descriptor][style] = new Benchmark(style, location);
+                    window.mapboxglBenchmarks[Benchmark.name][descriptor][style] = new Benchmark(style, [location]);
                 });
                 break;
             // default case covers StyleLayerCreate, StyleValidate, QueryBox and QueryPoint
