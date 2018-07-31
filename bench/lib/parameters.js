@@ -16,8 +16,7 @@ let styleURL = (
 const defaultURL = 'mapbox://styles/mapbox/streets-v10';
 
 if (isStyleBench) {
-    // local storage coerces a null value to a string so if that happens, fall back to a default style url
-    styleURL = !styleURL || styleURL === 'null' ? [defaultURL] : styleURL.split(',');
+    styleURL = !styleURL ? [defaultURL] : styleURL.split(',');
 } else {
     styleURL = defaultURL;
 }
