@@ -1,4 +1,4 @@
-const isStyleBench = process.env.STYLE_BENCHMARK;
+const isStyleBench = getURLParameter('style_bench');
 
 const accessToken = (
     process.env.MapboxAccessToken ||

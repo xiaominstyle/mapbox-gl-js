@@ -127,7 +127,6 @@
     "start": "run-p build-token watch-css watch-dev watch-benchmarks watch-benchmarks-view start-server",
     "start-debug": "run-p build-token watch-css watch-dev start-server",
     "start-bench": "run-p build-token watch-benchmarks watch-benchmarks-view start-server",
-    "start-style-bench": "STYLE_BENCHMARK=true run-p build-token watch-benchmarks watch-benchmarks-view start-server",
     "build-docs": "documentation build --github --format json --config ./docs/documentation.yml --output docs/components/api.json src/index.js",
     "build": "run-s build-docs && DEPLOY_ENV=production batfish build # invoked by publisher when publishing docs on the mb-pages branch",
     "start-docs": "run-s build-min build-css build-docs && DEPLOY_ENV=local batfish start",

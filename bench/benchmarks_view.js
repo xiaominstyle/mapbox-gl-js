@@ -432,7 +432,7 @@ for (const name in window.mapboxglBenchmarks) {
     if (filter && name !== filter)
         continue;
 
-    if (isStyleBench && name === 'Layout' || name === 'Paint') {
+    if (isStyleBench && (name === 'Layout' || name === 'Paint')) {
         // create a new test in the requested benchmark suite for each location
         // this benchmarks array is distinct from window.mapboxglBenchmarks and is used to create and update the UI
         locations.forEach(location => {
