@@ -1,5 +1,3 @@
-const isStyleBench = getURLParameter('style_bench');
-
 const accessToken = (
     process.env.MapboxAccessToken ||
     process.env.MAPBOX_ACCESS_TOKEN ||
@@ -7,23 +5,20 @@ const accessToken = (
     localStorage.getItem('accessToken')
 );
 
-let styleURL = (
-    process.env.MapboxStyleURL ||
-    process.env.MAPBOX_STYLE_URL ||
-    getURLParameter('style_url')
-);
+const styleURL = (_isStyleBench) => {
+    const url = (
+        process.env.MapboxStyleURL ||
+        process.env.MAPBOX_STYLE_URL ||
+        getURLParameter('style_url') ||
+        'mapbox://styles/mapbox/streets-v10'
+    );
 
-const defaultURL = 'mapbox://styles/mapbox/streets-v10';
-
-if (isStyleBench) {
-    styleURL = !styleURL ? [defaultURL] : styleURL.split(',');
-} else {
-    styleURL = defaultURL;
-}
+    return _isStyleBench ? url.split(',') : url;
+};
 
 localStorage.setItem('accessToken', accessToken);
 
-export { accessToken, styleURL, isStyleBench };
+export { accessToken, styleURL };
 
 function getURLParameter(name) {
     const regexp = new RegExp(`[?&]${name}=([^&#]*)`, 'i');

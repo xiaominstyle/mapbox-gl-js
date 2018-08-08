@@ -14,8 +14,10 @@ const plugins = () => basePlugins().concat(
     })
 );
 
+const testFolder = process.env.STYLE_BENCH ? 'style-tests' : 'version-tests';
+
 const config = [{
-    input: 'bench/benchmarks_view.js',
+    input: `bench/${testFolder}/benchmarks_viewmodel.js`,
     output: {
         file: 'bench/benchmarks_view_generated.js',
         format: 'umd',

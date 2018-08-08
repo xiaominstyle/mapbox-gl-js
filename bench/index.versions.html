@@ -15,27 +15,17 @@
     <div id="benchmarks"></div>
     <script>
         const params = new URLSearchParams(location.search.slice(1));
-        const localBenchScripts = ['/bench/benchmarks_generated.js', '/bench/benchmarks_view_generated.js'];
-
-        if (params.get('style_bench')) {
-          promisifyScripts(localBenchScripts);
-        } else {
-          Promise.resolve(params.has('compare') ?
-          params.getAll('compare').filter(Boolean) :
-          fetch('/package.json')
-          .then(response => response.json())
-          .then(pkg => [`v${pkg.version}`, 'master']))
-          .then(versions => {
-            const scripts = versions.map(v => `https://s3.amazonaws.com/mapbox-gl-js/${v}/benchmarks.js`)
-                .concat(localBenchScripts);
-            promisifyScripts(scripts);
-          })
-          .catch(err => console.error(err))
-        }
-
-        function promisifyScripts(scripts) {
-          return scripts.reduce((p, script) => p.then(() => loadScript(script)), Promise.resolve());
-        }
+        Promise.resolve(params.has('compare') ?
+            params.getAll('compare').filter(Boolean) :
+            fetch('/package.json')
+            .then(response => response.json())
+            .then(pkg => [`v${pkg.version}`, 'master']))
+            .then(versions => {
+                const scripts = versions.map(v => `https://s3.amazonaws.com/mapbox-gl-js/${v}/benchmarks.js`)
+                    .concat('/bench/benchmarks_generated.js', '/bench/benchmarks_view_generated.js');
+                return scripts.reduce((p, script) => p.then(() => loadScript(script)), Promise.resolve());
+            })
+            .catch(err => console.error(err));
 
         function loadScript(src) {
             return new Promise(function (resolve, reject) {

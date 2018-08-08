@@ -1,10 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import * as d3 from 'd3';
 import Axis from './lib/axis';
-import { summaryStatistics, regression, kde, probabilitiesOfSuperiority } from './lib/statistics';
-import { locations } from './lib/style_locations';
-import { isStyleBench } from './lib/parameters';
+import { kde, probabilitiesOfSuperiority } from './lib/statistics';
 
 const versionColor = d3.scaleOrdinal(['#1b9e77', '#7570b3', '#d95f02']);
 const formatSample = d3.format(".3r");
@@ -378,7 +375,7 @@ class BenchmarkRow extends React.Component {
     }
 }
 
-class BenchmarksTable extends React.Component {
+export default class BenchmarksTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {sharing: false};
@@ -420,126 +417,4 @@ class BenchmarksTable extends React.Component {
             .then(response => response.json())
             .then(json => { window.location = `https://bl.ocks.org/anonymous/raw/${json.id}/`; });
     }
-}
-
-const benchmarks = [];
-const filter = window.location.hash.substr(1);
-
-let finished = false;
-let promise = Promise.resolve();
-
-for (const name in window.mapboxglBenchmarks) {
-    if (filter && name !== filter)
-        continue;
-
-    if (isStyleBench && (name === 'Layout' || name === 'Paint')) {
-        // create a new test in the requested benchmark suite for each location
-        // this benchmarks array is distinct from window.mapboxglBenchmarks and is used to create and update the UI
-        locations.forEach(location => {
-            benchmarks.push({benchmark: {
-                location,
-                name
-            }});
-        });
-
-        for (const loc in window.mapboxglBenchmarks[name]) {
-            // we have to add the versions array here
-            // otherwise, we end up duplicating tests
-            benchmarks.forEach(bench => {
-                if (bench.hasOwnProperty('benchmark')) {
-                    bench.benchmark.versions = [];
-                }
-            });
-
-            for (const style in window.mapboxglBenchmarks[name][loc]) {
-                // push a test object for each style
-                benchmarks.forEach(bench => {
-                    if (bench.hasOwnProperty('benchmark')) {
-                        bench.benchmark.versions.push({
-                            name: style,
-                            status: 'waiting',
-                            logs: [],
-                            samples: [],
-                            style: {},
-                            summary: {}
-                        });
-                    }
-                });
-
-                promise = promise.then(() => {
-                    // we have to find the correct version to update on each test run or else the UI will not update properly
-                    const versions = benchmarks.filter(bench => bench.benchmark && bench.benchmark.location.description.toLowerCase().split(' ').join('_') === loc && bench.benchmark.name === name)[0].benchmark.versions;
-                    const version = versions.filter(version => version.name === style)[0];
-                    version.status = 'running';
-                    update();
-
-                    return window.mapboxglBenchmarks[name][loc][style].run()
-                        .then(measurements => {
-                            // scale measurements down by iteration count, so that
-                            // they represent (average) time for a single iteration
-                            const samples = measurements.map(({time, iterations}) => time / iterations);
-                            version.status = 'ended';
-                            version.samples = samples;
-                            version.summary = summaryStatistics(samples);
-                            version.regression = regression(measurements);
-                            update();
-                        })
-                        .catch(error => {
-                            version.status = 'errored';
-                            version.error = error;
-                            update();
-                        });
-                });
-            }
-        }
-    } else {
-        const benchmark = { name, versions: [] };
-        benchmarks.push(benchmark);
-
-        for (const ver in window.mapboxglBenchmarks[name]) {
-            const version = {
-                name: ver,
-                status: 'waiting',
-                logs: [],
-                samples: [],
-                summary: {}
-            };
-
-            benchmark.versions.push(version);
-
-            promise = promise.then(() => {
-                version.status = 'running';
-                update();
-
-                return window.mapboxglBenchmarks[name][ver].run()
-                    .then(measurements => {
-                        // scale measurements down by iteration count, so that
-                        // they represent (average) time for a single iteration
-                        const samples = measurements.map(({time, iterations}) => time / iterations);
-                        version.status = 'ended';
-                        version.samples = samples;
-                        version.summary = summaryStatistics(samples);
-                        version.regression = regression(measurements);
-                        update();
-                    })
-                    .catch(error => {
-                        version.status = 'errored';
-                        version.error = error;
-                        update();
-                    });
-            });
-        }
-    }
-}
-
-promise = promise.then(() => {
-    finished = true;
-    update();
-});
-
-function update() {
-    ReactDOM.render(
-        <BenchmarksTable benchmarks={benchmarks} finished={finished}/>,
-        document.getElementById('benchmarks')
-    );
 }

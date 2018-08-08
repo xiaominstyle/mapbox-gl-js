@@ -15,8 +15,10 @@ const plugins = () => basePlugins().concat(
     })
 );
 
+const testFolder = process.env.STYLE_BENCH ? 'style-tests' : 'version-tests';
+
 const config = [{
-    input: ['bench/benchmarks.js', 'src/source/worker.js'],
+    input: [`bench/${testFolder}/benchmarks.js`, 'src/source/worker.js'],
     output: {
         dir: 'rollup/build/benchmarks',
         format: 'amd',
