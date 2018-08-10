@@ -6,9 +6,8 @@ import StencilMode from '../gl/stencil_mode';
 import {
     fillExtrusionUniformValues,
     fillExtrusionPatternUniformValues,
-    extrusionTextureUniformValues
 } from './program/fill_extrusion_program';
-import {drawToOffscreenFramebuffer, drawOffscreenTexture} from './offscreen';
+import {prepareOffscreenFramebuffer, drawOffscreenTexture} from './offscreen';
 
 import type Painter from './painter';
 import type SourceCache from '../source/source_cache';
@@ -24,7 +23,7 @@ function draw(painter: Painter, source: SourceCache, layer: FillExtrusionStyleLa
     }
 
     if (painter.renderPass === 'offscreen') {
-        drawToOffscreenFramebuffer(painter, layer);
+        prepareOffscreenFramebuffer(painter, layer);
 
         const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]),
             stencilMode = StencilMode.disabled,
