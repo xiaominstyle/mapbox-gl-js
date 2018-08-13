@@ -4,33 +4,21 @@ import createMap from '../lib/create_map';
 
 const width = 1024;
 const height = 768;
-const zooms = [4, 8, 11, 13, 15, 17];
+const zooms = [{zoom: 4}, {zoom: 8}, {zoom: 11}, {zoom: 13}, {zoom: 15}, {zoom: 17}];
 
 export default class Paint extends Benchmark {
     setup() {
-        let promises = [];
-        if (this.locations) {
-            const location = this.locations[0];
-            promises.push(createMap({
+        const locations = this.locations || zooms;
+
+        return Promise.all(locations.map(location => {
+            return createMap({
                 zoom: location.zoom,
                 width,
                 height,
-                center: location.center,
+                center: location.center || [-77.032194, 38.912753],
                 style: this.styleURL
-            }));
-        } else {
-            promises = zooms.map(zoom => {
-                return createMap({
-                    zoom,
-                    width,
-                    height,
-                    center: [-77.032194, 38.912753],
-                    style: this.styleURL
-                });
             });
-        }
-
-        return Promise.all(promises)
+        }))
             .then(maps => {
                 this.maps = maps;
             });
