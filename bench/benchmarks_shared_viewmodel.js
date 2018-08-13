@@ -1,4 +1,4 @@
-// import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 import BenchmarksTable from './benchmarks_view';
 import { summaryStatistics, regression } from './lib/statistics';
