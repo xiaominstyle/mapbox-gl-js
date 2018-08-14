@@ -7,7 +7,7 @@ import DepthMode from './depth_mode';
 import StencilMode from './stencil_mode';
 import ColorMode from './color_mode';
 import { deepEqual } from '../util/util';
-import { ClearColor, ClearDepth, ClearStencil, ColorMask, DepthMask, StencilMask, StencilFunc, StencilOp, StencilTest, DepthRange, DepthTest, DepthFunc, CullFace, Blend, BlendFunc, BlendColor, Program, ActiveTextureUnit, Viewport, BindFramebuffer, BindRenderbuffer, BindTexture, BindVertexBuffer, BindElementBuffer, BindVertexArrayOES, PixelStoreUnpack, PixelStoreUnpackPremultiplyAlpha, PixelStoreUnpackFlipY } from './value';
+import { ClearColor, ClearDepth, ClearStencil, ColorMask, DepthMask, StencilMask, StencilFunc, StencilOp, StencilTest, DepthRange, DepthTest, DepthFunc, CullFace, Blend, BlendFunc, BlendColor, BlendEquation, Program, ActiveTextureUnit, Viewport, BindFramebuffer, BindRenderbuffer, BindTexture, BindVertexBuffer, BindElementBuffer, BindVertexArrayOES, PixelStoreUnpack, PixelStoreUnpackPremultiplyAlpha, PixelStoreUnpackFlipY } from './value';
 
 
 import type {TriangleIndexArray, LineIndexArray, LineStripIndexArray} from '../data/index_array_type';
@@ -45,6 +45,7 @@ class Context {
     blend: Blend;
     blendFunc: BlendFunc;
     blendColor: BlendColor;
+    blendEquation: BlendEquation;
     program: Program;
     activeTexture: ActiveTextureUnit;
     viewport: Viewport;
@@ -82,6 +83,7 @@ class Context {
         this.blend = new Blend(this);
         this.blendFunc = new BlendFunc(this);
         this.blendColor = new BlendColor(this);
+        this.blendEquation = new BlendEquation(this);
         this.program = new Program(this);
         this.activeTexture = new ActiveTextureUnit(this);
         this.viewport = new Viewport(this);
@@ -128,6 +130,7 @@ class Context {
         this.blend.dirty = true;
         this.blendFunc.dirty = true;
         this.blendColor.dirty = true;
+        this.blendEquation.dirty = true;
         this.program.dirty = true;
         this.activeTexture.dirty = true;
         this.viewport.dirty = true;

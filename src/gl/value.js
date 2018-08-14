@@ -5,6 +5,7 @@ import Color from '../style-spec/util/color';
 import type Context from './context';
 import type {
     BlendFuncType,
+    BlendEquationType,
     ColorMaskType,
     DepthRangeType,
     DepthMaskType,
@@ -468,6 +469,33 @@ export class BlendColor implements Value<Color> {
         const c = this.current;
         if (v.r !== c.r || v.g !== c.g || v.b !== c.b || v.a !== c.a || this.dirty === true) {
             this.context.gl.blendColor(v.r, v.g, v.b, v.a);
+            this.current = v;
+            this.dirty = false;
+        }
+    }
+}
+
+export class BlendEquation implements Value<BlendEquationType> {
+    context: Context;
+    current: BlendEquationType;
+    default: BlendEquationType;
+    dirty: boolean;
+
+    constructor(context: Context) {
+        this.context = context;
+        this.default = this.context.gl.FUNC_ADD;
+        this.current = this.default;
+        this.dirty = false;
+    }
+
+    get(): BlendEquationType { return this.current; }
+
+    setDefault(): void { this.set(this.default); }
+
+    set(v: BlendEquationType): void {
+        const c = this.current;
+        if (v !== this.current || this.dirty === true) {
+            this.context.gl.blendEquation(v);
             this.current = v;
             this.dirty = false;
         }

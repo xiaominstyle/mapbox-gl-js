@@ -505,9 +505,14 @@ class Painter {
         this.context.pixelStoreUnpackFlipY.setDefault();
     }
 
+    /*
+     * Set GL state that is shared by all layers.
+     */
     setBaseState() {
+        const gl = this.context.gl;
         this.context.cullFace.set(false);
         this.context.viewport.set([0, 0, this.width, this.height]);
+        this.context.blendEquation.set(gl.FUNC_ADD);
     }
 }
 
