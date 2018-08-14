@@ -1,6 +1,5 @@
 // @flow
 
-import Color from '../style-spec/util/color';
 import DepthMode from '../gl/depth_mode';
 import StencilMode from '../gl/stencil_mode';
 import {

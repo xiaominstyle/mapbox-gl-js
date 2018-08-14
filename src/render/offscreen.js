@@ -4,7 +4,6 @@ import Texture from './texture';
 import Color from '../style-spec/util/color';
 import DepthMode from '../gl/depth_mode';
 import StencilMode from '../gl/stencil_mode';
-import {mat4} from 'gl-matrix';
 import {extrusionTextureUniformValues} from './program/fill_extrusion_program';
 
 import type Painter from './painter';
@@ -51,7 +50,7 @@ export function drawOffscreenTexture(painter: Painter, layer: CustomStyleLayer |
     const context = painter.context;
     const gl = context.gl;
 
-	context.activeTexture.set(gl.TEXTURE0);
+    context.activeTexture.set(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, renderedTexture.colorAttachment.get());
 
     painter.useProgram('extrusionTexture').draw(context, gl.TRIANGLES,

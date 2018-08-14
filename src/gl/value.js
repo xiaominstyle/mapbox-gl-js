@@ -493,7 +493,6 @@ export class BlendEquation implements Value<BlendEquationType> {
     setDefault(): void { this.set(this.default); }
 
     set(v: BlendEquationType): void {
-        const c = this.current;
         if (v !== this.current || this.dirty === true) {
             this.context.gl.blendEquation(v);
             this.current = v;

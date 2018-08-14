@@ -17,7 +17,6 @@ import type Painter from '../painter';
 import type {OverscaledTileID} from '../../source/tile_id';
 import type {CrossFaded} from '../../style/cross_faded';
 import type {UniformValues, UniformLocations} from '../uniform_binding';
-import type FillExtrusionStyleLayer from '../../style/style_layer/fill_extrusion_style_layer';
 
 export type FillExtrusionUniformsType = {|
     'u_matrix': UniformMatrix4f,

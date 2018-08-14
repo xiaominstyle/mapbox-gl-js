@@ -1,5 +1,3 @@
-'use strict';
-
 class NullIsland {
     constructor() {
         this.id = 'null-island';
@@ -119,5 +117,7 @@ class Tent3D {
     }
 }
 
-module.exports["tent-3d"] = Tent3D;
-module.exports["null-island"] = NullIsland;
+export default {
+    "tent-3d": Tent3D,
+    "null-island": NullIsland
+};
