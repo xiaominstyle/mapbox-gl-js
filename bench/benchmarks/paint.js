@@ -7,6 +7,12 @@ const height = 768;
 const zooms = [{zoom: 4}, {zoom: 8}, {zoom: 11}, {zoom: 13}, {zoom: 15}, {zoom: 17}];
 
 export default class Paint extends Benchmark {
+    constructor(url, locations) {
+        super();
+        this.url = url;
+        this.locations = locations;
+    }
+
     setup() {
         const locations = this.locations || zooms;
 
@@ -16,7 +22,7 @@ export default class Paint extends Benchmark {
                 width,
                 height,
                 center: location.center || [-77.032194, 38.912753],
-                style: this.styleURL
+                style: this.url
             });
         }))
             .then(maps => {

@@ -12,20 +12,9 @@ export type Measurement = {
     time: number
 };
 
-type Location = {
-    description: string,
-    tileID: Array<OverscaledTileID>,
-    zoom: number,
-    center: LngLatLike
-};
-
 class Benchmark {
-    styleURL: string;
-    locations: ?Array<Location>;
 
-    constructor(styleURL: string, locations: ?Array<Location>) {
-        this.styleURL = styleURL;
-        this.locations = locations;
+    constructor() {
         this._measureAsync = this._measureAsync.bind(this);
     }
 

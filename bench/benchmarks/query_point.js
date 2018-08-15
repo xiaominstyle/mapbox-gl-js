@@ -18,6 +18,13 @@ for (let x = 0; x < d; x++) {
 }
 
 export default class QueryPoint extends Benchmark {
+
+    constructor(url, locations) {
+        super();
+        this.url = url;
+        this.locations = locations;
+    }
+
     setup() {
         const locations = this.locations || zooms;
 
@@ -27,7 +34,7 @@ export default class QueryPoint extends Benchmark {
                 width,
                 height,
                 center: location.center || [-77.032194, 38.912753],
-                style: this.styleURL
+                style: this.url
             });
         }))
             .then(maps => {

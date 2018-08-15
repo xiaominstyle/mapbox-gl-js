@@ -33,11 +33,14 @@ function register(Benchmark) {
                 window.mapboxglBenchmarks[Benchmark.name][descriptor][style] = new Benchmark(style, [location]);
             });
             break;
-        // default case covers StyleLayerCreate, StyleValidate, QueryBox and QueryPoint
-        // StyleLayerCreate and StyleValidate are important for benching styles but are not location dependent so process them like normal bench tests
-        // QueryBox and QueryPoint need the locations but do not need to be processed per-location (e.g. can be averaged into one test) so we can can just process them as normal
-        default:
+        case 'QueryBox':
+        case 'QueryPoint':
+            // QueryBox and QueryPoint need the locations but do not need to be processed per-location (e.g. can be averaged into one test) so we can can just process them as normal
             window.mapboxglBenchmarks[Benchmark.name][style] = new Benchmark(style, locations);
+        // default case covers StyleLayerCreate and StyleValidate
+        // StyleLayerCreate and StyleValidate are important for benching styles but are not location dependent so process them like normal bench tests
+        default:
+            window.mapboxglBenchmarks[Benchmark.name][style] = new Benchmark(style);
         }
     });
 }
