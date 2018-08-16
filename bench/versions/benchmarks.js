@@ -10,7 +10,7 @@ window.mapboxglBenchmarks = window.mapboxglBenchmarks || {};
 const style = 'mapbox://styles/mapbox/streets-v10';
 const center = [-77.032194, 38.912753];
 const zooms = [4, 8, 11, 13, 15, 17];
-const locations = zooms.map(zoom => ({style, center, zoom}));
+const locations = zooms.map(zoom => ({center, zoom}));
 const version = process.env.BENCHMARK_VERSION;
 window.mapboxglVersions.push(version);
 
@@ -23,7 +23,7 @@ function register(Benchmark) {
       case 'QueryPoint':
       case 'QueryBox':
       case 'Layout':
-          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(locations);
+          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(style, locations);
           break;
       case 'StyleLayerCreate':
       case 'StyleValidate':

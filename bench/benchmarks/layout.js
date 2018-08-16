@@ -23,8 +23,9 @@ export default class Layout extends Benchmark {
     layerIndex: StyleLayerIndex;
     tiles: Array<{tileID: OverscaledTileID, buffer: ArrayBuffer}>;
 
-    constructor(locations) {
+    constructor(style, locations) {
         super();
+        this.style = style;
         this.locations = locations;
     }
 
@@ -42,7 +43,7 @@ export default class Layout extends Benchmark {
     }
 
     fetchStyle(): Promise<StyleSpecification> {
-        return fetch(normalizeStyleURL(this.locations[0].style))
+        return fetch(normalizeStyleURL(this.style))
             .then(response => response.json());
     }
 

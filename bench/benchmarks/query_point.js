@@ -18,8 +18,9 @@ for (let x = 0; x < d; x++) {
 
 export default class QueryPoint extends Benchmark {
 
-    constructor(locations) {
+    constructor(style, locations) {
         super();
+        this.style = style;
         this.locations = locations;
     }
 
@@ -30,7 +31,7 @@ export default class QueryPoint extends Benchmark {
                 width,
                 height,
                 center: location.center,
-                style: location.style
+                style: this.style
             });
         }))
             .then(maps => {

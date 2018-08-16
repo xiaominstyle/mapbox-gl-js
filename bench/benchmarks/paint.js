@@ -6,8 +6,9 @@ const width = 1024;
 const height = 768;
 
 export default class Paint extends Benchmark {
-    constructor(locations) {
+    constructor(style, locations) {
         super();
+        this.style = style;
         this.locations = locations;
     }
 
@@ -18,7 +19,7 @@ export default class Paint extends Benchmark {
                 width,
                 height,
                 center: location.center,
-                style: location.style
+                style: this.style
             });
         }))
             .then(maps => {

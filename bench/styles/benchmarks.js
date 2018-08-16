@@ -20,7 +20,7 @@ function register(Benchmark) {
         if (!window.mapboxglBenchmarks[Benchmark.name]) {
             window.mapboxglBenchmarks[Benchmark.name] = {};
         }
-
+        console.log('locations', locations);
         switch (Benchmark.name) {
         case 'Layout':
         case 'Paint':
@@ -39,6 +39,7 @@ function register(Benchmark) {
         case 'QueryPoint':
             // QueryBox and QueryPoint need the locations but do not need to be processed per-location (e.g. can be averaged into one test) so we can can just process them as normal
             window.mapboxglBenchmarks[Benchmark.name][style] = new Benchmark(style, locations);
+            break;
         // default case covers StyleLayerCreate and StyleValidate
         // StyleLayerCreate and StyleValidate are important for benching styles but are not location dependent so process them like normal bench tests
         default:

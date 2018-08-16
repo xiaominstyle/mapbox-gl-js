@@ -7,8 +7,9 @@ const height = 768;
 
 export default class QueryBox extends Benchmark {
 
-    constructor(locations) {
+    constructor(style, locations) {
         super();
+        this.style = style;
         this.locations = locations;
     }
 
@@ -19,7 +20,7 @@ export default class QueryBox extends Benchmark {
                 width,
                 height,
                 center: location.center,
-                style: location.style
+                style: this.style
             });
         }))
             .then(maps => {
