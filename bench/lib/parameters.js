@@ -5,20 +5,9 @@ const accessToken = (
     localStorage.getItem('accessToken')
 );
 
-const styleURL = (_isStyleBench) => {
-    const url = (
-        process.env.MapboxStyleURL ||
-        process.env.MAPBOX_STYLE_URL ||
-        getURLParameter('style_url') ||
-        'mapbox://styles/mapbox/streets-v10'
-    );
-
-    return _isStyleBench ? url.split(',') : url;
-};
-
 localStorage.setItem('accessToken', accessToken);
 
-export { accessToken, styleURL };
+export { accessToken };
 
 function getURLParameter(name) {
     const regexp = new RegExp(`[?&]${name}=([^&#]*)`, 'i');

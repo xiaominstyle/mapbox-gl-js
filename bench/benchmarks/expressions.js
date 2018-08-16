@@ -20,8 +20,13 @@ class ExpressionBenchmark extends Benchmark {
         compiledExpression: StylePropertyExpression
     }>;
 
+    constructor(style) {
+        super();
+        this.style = style;
+    }
+
     setup() {
-        return fetch(normalizeStyleURL(this.styleURL))
+        return fetch(normalizeStyleURL(this.style))
             .then(response => response.json())
             .then(json => {
                 this.data = [];

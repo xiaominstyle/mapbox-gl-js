@@ -4,13 +4,13 @@ import validateStyle from '../../src/style-spec/validate_style.min';
 import { normalizeStyleURL } from '../../src/util/mapbox';
 
 export default class StyleValidate extends Benchmark {
-    constructor(url) {
+    constructor(style) {
         super();
-        this.url = url;
+        this.style = style;
     }
 
     setup() {
-        return fetch(normalizeStyleURL(this.url))
+        return fetch(normalizeStyleURL(this.style))
             .then(response => response.json())
             .then(json => { this.json = json; });
     }

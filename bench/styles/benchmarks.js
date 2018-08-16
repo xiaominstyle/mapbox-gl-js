@@ -1,7 +1,7 @@
 // @flow
 
 import mapboxgl from '../../src';
-import { accessToken, styleURL } from '../lib/parameters';
+import { accessToken } from '../lib/parameters';
 import { locations } from '../lib/style_locations';
 
 mapboxgl.accessToken = accessToken;
@@ -12,9 +12,11 @@ window.mapboxglBenchmarks = window.mapboxglBenchmarks || {};
 const version = process.env.BENCHMARK_VERSION;
 window.mapboxglVersions.push(version);
 
+const urls = (process.env.MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/streets-v10').split(',');
+
 function register(Benchmark) {
     // sort by the style urls instead of the branch name so that a style benchmark can run the same branch multiple times with differing style urls
-    styleURL(true).forEach((style) => {
+    urls.forEach((style) => {
         if (!window.mapboxglBenchmarks[Benchmark.name]) {
             window.mapboxglBenchmarks[Benchmark.name] = {};
         }

@@ -1,19 +1,46 @@
 // @flow
 
 import mapboxgl from '../../src';
-import { accessToken, styleURL } from '../lib/parameters';
+import { accessToken } from '../lib/parameters';
 mapboxgl.accessToken = accessToken;
 
 window.mapboxglVersions = window.mapboxglVersions || [];
 window.mapboxglBenchmarks = window.mapboxglBenchmarks || {};
 
-const url = styleURL();
+const style = 'mapbox://styles/mapbox/streets-v10';
+const center = [-77.032194, 38.912753];
+const zooms = [4, 8, 11, 13, 15, 17];
+const locations = zooms.map(zoom => ({style, center, zoom}));
 const version = process.env.BENCHMARK_VERSION;
 window.mapboxglVersions.push(version);
 
 function register(Benchmark) {
     window.mapboxglBenchmarks[Benchmark.name] = window.mapboxglBenchmarks[Benchmark.name] || {};
-    window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(url);
+
+    console.log('Benchmark.name', Benchmark.name);
+    switch (Benchmark.name) {
+      case 'Paint':
+      case 'QueryPoint':
+      case 'QueryBox':
+      case 'Layout':
+          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(locations);
+          break;
+      case 'StyleLayerCreate':
+      case 'StyleValidate':
+      case 'FunctionCreate':
+      case 'FunctionConvert':
+      case 'FunctionEvaluate':
+      case 'ExpressionCreate':
+      case 'ExpressionEvaluate':
+          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(style);
+          break;
+      case 'PaintStates':
+          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(center);
+          break;
+      // MapLoad, LayoutDDS, Layers, FilterEvaluate, FilterCreate
+      default:
+          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark();
+    }
 }
 
 import Layout from '../benchmarks/layout';

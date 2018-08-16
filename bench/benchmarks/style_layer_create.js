@@ -5,13 +5,13 @@ import deref from '../../src/style-spec/deref';
 import { normalizeStyleURL } from '../../src/util/mapbox';
 
 export default class StyleLayerCreate extends Benchmark {
-    constructor(url) {
+    constructor(style) {
         super();
-        this.url = url;
+        this.style = style;
     }
 
     setup() {
-        return fetch(normalizeStyleURL(this.url))
+        return fetch(normalizeStyleURL(this.style))
             .then(response => response.json())
             .then(json => { this.layers = deref(json.layers); });
     }
