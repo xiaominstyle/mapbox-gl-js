@@ -1,6 +1,4 @@
 // @flow
-import { OverscaledTileID } from '../../src/source/tile_id';
-import type { LngLatLike } from '../../src/geo/lng_lat';
 // According to https://developer.mozilla.org/en-US/docs/Web/API/Performance/now,
 // performance.now() should be accurate to 0.005ms. Set the minimum running
 // time for a single measurement at 5ms, so that the error due to timer

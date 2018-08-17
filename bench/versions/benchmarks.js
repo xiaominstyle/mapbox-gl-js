@@ -18,27 +18,27 @@ function register(Benchmark) {
     window.mapboxglBenchmarks[Benchmark.name] = window.mapboxglBenchmarks[Benchmark.name] || {};
 
     switch (Benchmark.name) {
-      case 'Paint':
-      case 'QueryPoint':
-      case 'QueryBox':
-      case 'Layout':
-          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(style, locations);
-          break;
-      case 'StyleLayerCreate':
-      case 'StyleValidate':
-      case 'FunctionCreate':
-      case 'FunctionConvert':
-      case 'FunctionEvaluate':
-      case 'ExpressionCreate':
-      case 'ExpressionEvaluate':
-          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(style);
-          break;
-      case 'PaintStates':
-          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(center);
-          break;
-      // MapLoad, LayoutDDS, Layers, FilterEvaluate, FilterCreate
-      default:
-          window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark();
+    case 'Paint':
+    case 'QueryPoint':
+    case 'QueryBox':
+    case 'Layout':
+        window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(style, locations);
+        break;
+    case 'StyleLayerCreate':
+    case 'StyleValidate':
+    case 'FunctionCreate':
+    case 'FunctionConvert':
+    case 'FunctionEvaluate':
+    case 'ExpressionCreate':
+    case 'ExpressionEvaluate':
+        window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(style);
+        break;
+    case 'PaintStates':
+        window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(center);
+        break;
+    // MapLoad, LayoutDDS, Layers, FilterEvaluate, FilterCreate
+    default:
+        window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark();
     }
 }
 
