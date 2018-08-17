@@ -20,7 +20,7 @@ function register(Benchmark) {
         if (!window.mapboxglBenchmarks[Benchmark.name]) {
             window.mapboxglBenchmarks[Benchmark.name] = {};
         }
-        console.log('locations', locations);
+
         switch (Benchmark.name) {
         case 'Layout':
         case 'Paint':

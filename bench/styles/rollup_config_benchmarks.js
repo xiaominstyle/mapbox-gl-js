@@ -1,5 +1,7 @@
+import fs from 'fs';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 import replace from 'rollup-plugin-replace';
-import {plugins as basePlugins} from '../build/rollup_plugins';
+import {plugins as basePlugins} from '../../build/rollup_plugins';
 
 const plugins = () => basePlugins().concat(
     replace({
@@ -8,22 +10,30 @@ const plugins = () => basePlugins().concat(
         'process.env.MapboxAccessToken': JSON.stringify(process.env.MapboxAccessToken),
         'process.env.MAPBOX_STYLE_URL': JSON.stringify(process.env.MAPBOX_STYLE_URL),
         'process.env.MapboxStyleURL': JSON.stringify(process.env.MapboxStyleURL),
-        'process.env.STYLE_BENCHMARK': JSON.stringify(process.env.STYLE_BENCHMARK),
-        // should we rewrite this as 'production' if BUILD==='production'?
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     })
 );
 
-const testFolder = process.env.STYLE_BENCH ? 'styles' : 'versions';
-
 const config = [{
-    input: `bench/${testFolder}/benchmarks_viewmodel.js`,
+    input: [`bench/styles/benchmarks.js`, 'src/source/worker.js'],
     output: {
-        file: 'bench/benchmarks_view_generated.js',
-        format: 'umd',
+        dir: 'rollup/build/benchmarks/styles',
+        format: 'amd',
         sourcemap: 'inline'
     },
+    experimentalCodeSplitting: true,
     plugins: plugins()
+}, {
+    input: 'rollup/style_benchmarks.js',
+    output: {
+        file: 'bench/styles/benchmarks_generated.js',
+        format: 'umd',
+        sourcemap: 'inline',
+        intro: fs.readFileSync(require.resolve('../../rollup/bundle_prelude.js'), 'utf8')
+    },
+    treeshake: false,
+    indent: false,
+    plugins: [sourcemaps()],
 }];
 
 export default config;

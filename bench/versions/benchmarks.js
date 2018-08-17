@@ -17,7 +17,6 @@ window.mapboxglVersions.push(version);
 function register(Benchmark) {
     window.mapboxglBenchmarks[Benchmark.name] = window.mapboxglBenchmarks[Benchmark.name] || {};
 
-    console.log('Benchmark.name', Benchmark.name);
     switch (Benchmark.name) {
       case 'Paint':
       case 'QueryPoint':
