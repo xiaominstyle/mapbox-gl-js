@@ -2,7 +2,7 @@ import { locations } from '../lib/style_locations';
 import { setupTestRun, benchmarks } from '../benchmarks_shared_viewmodel';
 
 const filter = window.location.hash.substr(1);
-
+console.log('mapboxglBenchmarks', window.mapboxglBenchmarks);
 for (const name in window.mapboxglBenchmarks) {
     if (filter && name !== filter)
         continue;
@@ -13,10 +13,10 @@ for (const name in window.mapboxglBenchmarks) {
         // create a new test in the requested benchmark suite for each location
         // this benchmarks array is distinct from window.mapboxglBenchmarks and is used to create and update the UI
         locations.forEach(location => {
-            benchmarks.push({benchmark: {
+            benchmarks.push({
                 location,
                 name
-            }});
+            });
         });
 
         for (const loc in window.mapboxglBenchmarks[name]) {
@@ -25,9 +25,7 @@ for (const name in window.mapboxglBenchmarks) {
             // we have to add the versions array here
             // otherwise, we end up duplicating tests
             benchmarks.forEach(bench => {
-                if (bench.hasOwnProperty('benchmark')) {
-                    bench.benchmark.versions = [];
-                }
+                bench.versions = [];
             });
             setupTestRun(name, test, testByLocation, loc);
         }

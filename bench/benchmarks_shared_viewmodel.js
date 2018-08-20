@@ -18,19 +18,19 @@ export function setupTestRun(name, suite, testByLocation, loc) {
         if (testByLocation) {
             // push a test object for each member of a test suite (style or version)
             benchmarks.forEach(bench => {
-                if (bench.hasOwnProperty('benchmark')) {
-                    bench.benchmark.versions.push(createVersion(testName));
-                }
+                bench.versions.push(createVersion(testName));
             });
         } else {
             version = createVersion(testName);
+            console.log('version', version);
             benchmark.versions.push(version);
         }
-
+        // console.log('version', name, version);
         promise = promise.then(() => {
             if (!version) {
+                console.log('benchmarks', benchmarks);
                 // we have to find the correct version to update on each test run or else the UI will not update properly
-                const versions = benchmarks.filter(bench => bench.benchmark && bench.benchmark.location.description.toLowerCase().split(' ').join('_') === loc && bench.benchmark.name === name)[0].benchmark.versions;
+                const versions = benchmarks.filter(bench => { console.log('bench', bench); return bench.location && bench.location.description.toLowerCase().split(' ').join('_') === loc && bench.name === name})[0].versions;
                 version = versions.filter(version => version.name === testName)[0];
             }
             version.status = 'running';
@@ -77,6 +77,7 @@ function runTests(test, version) {
 
 function update(finished) {
     finished = !!finished;
+    // console.log('benchmarks', benchmarks);
 
     ReactDOM.render(
         <BenchmarksTable benchmarks={benchmarks} finished={finished}/>,
