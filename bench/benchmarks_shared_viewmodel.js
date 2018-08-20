@@ -5,10 +5,10 @@ import { summaryStatistics, regression } from './lib/statistics';
 
 export const benchmarks = [];
 
-let finished = false;
 let promise = Promise.resolve();
 
 export function setupTestRun(name, suite, testByLocation, loc) {
+    let finished = false;
     const benchmark = { name, versions: [] };
     if (!testByLocation) {
         benchmarks.push(benchmark);
@@ -39,6 +39,11 @@ export function setupTestRun(name, suite, testByLocation, loc) {
             return runTests(suite[testName], version);
         });
     }
+
+    promise = promise.then(() => {
+        finished = true;
+        update(finished);
+    });
 }
 
 function createVersion(testName) {
@@ -70,12 +75,9 @@ function runTests(test, version) {
         });
 }
 
-promise = promise.then(() => {
-    finished = true;
-    update();
-});
+function update(finished) {
+    finished = !!finished;
 
-function update() {
     ReactDOM.render(
         <BenchmarksTable benchmarks={benchmarks} finished={finished}/>,
         document.getElementById('benchmarks')

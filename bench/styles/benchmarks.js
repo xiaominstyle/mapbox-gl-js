@@ -6,22 +6,19 @@ import { locations } from '../lib/style_locations';
 
 mapboxgl.accessToken = accessToken;
 
-window.mapboxglVersions = window.mapboxglVersions || [];
 window.mapboxglBenchmarks = window.mapboxglBenchmarks || {};
-
-const version = process.env.BENCHMARK_VERSION;
-window.mapboxglVersions.push(version);
 
 const urls = (process.env.MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/streets-v10').split(',');
 
 function register(Benchmark) {
+    const name = Benchmark.name;
     // sort by the style urls instead of the branch name so that a style benchmark can run the same branch multiple times with differing style urls
     urls.forEach((style) => {
-        if (!window.mapboxglBenchmarks[Benchmark.name]) {
-            window.mapboxglBenchmarks[Benchmark.name] = {};
+        if (!window.mapboxglBenchmarks[name]) {
+            window.mapboxglBenchmarks[name] = {};
         }
 
-        switch (Benchmark.name) {
+        switch (name) {
         case 'Layout':
         case 'Paint':
             // create tests for each location/tile
@@ -29,21 +26,21 @@ function register(Benchmark) {
             // (e.g. CJK, dense urban, rural, etc) rather than averaging all tiles together into one result
             locations.forEach(location => {
                 const descriptor = location.description.toLowerCase().split(' ').join('_');
-                if (!window.mapboxglBenchmarks[Benchmark.name][descriptor]) {
-                    window.mapboxglBenchmarks[Benchmark.name][descriptor] = {};
+                if (!window.mapboxglBenchmarks[name][descriptor]) {
+                    window.mapboxglBenchmarks[name][descriptor] = {};
                 }
-                window.mapboxglBenchmarks[Benchmark.name][descriptor][style] = new Benchmark(style, [location]);
+                window.mapboxglBenchmarks[name][descriptor][style] = new Benchmark(style, [location]);
             });
             break;
         case 'QueryBox':
         case 'QueryPoint':
             // QueryBox and QueryPoint need the locations but do not need to be processed per-location (e.g. can be averaged into one test) so we can can just process them as normal
-            window.mapboxglBenchmarks[Benchmark.name][style] = new Benchmark(style, locations);
+            window.mapboxglBenchmarks[name][style] = new Benchmark(style, locations);
             break;
         // default case covers StyleLayerCreate and StyleValidate
         // StyleLayerCreate and StyleValidate are important for benching styles but are not location dependent so process them like normal bench tests
         default:
-            window.mapboxglBenchmarks[Benchmark.name][style] = new Benchmark(style);
+            window.mapboxglBenchmarks[name][style] = new Benchmark(style);
         }
     });
 }

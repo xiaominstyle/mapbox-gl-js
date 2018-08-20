@@ -14,32 +14,10 @@ const locations = zooms.map(zoom => ({center, zoom}));
 const version = process.env.BENCHMARK_VERSION;
 window.mapboxglVersions.push(version);
 
-function register(Benchmark) {
-    window.mapboxglBenchmarks[Benchmark.name] = window.mapboxglBenchmarks[Benchmark.name] || {};
-
-    switch (Benchmark.name) {
-    case 'Paint':
-    case 'QueryPoint':
-    case 'QueryBox':
-    case 'Layout':
-        window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(style, locations);
-        break;
-    case 'StyleLayerCreate':
-    case 'StyleValidate':
-    case 'FunctionCreate':
-    case 'FunctionConvert':
-    case 'FunctionEvaluate':
-    case 'ExpressionCreate':
-    case 'ExpressionEvaluate':
-        window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(style);
-        break;
-    case 'PaintStates':
-        window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark(center);
-        break;
-    // MapLoad, LayoutDDS, Layers, FilterEvaluate, FilterCreate
-    default:
-        window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark();
-    }
+function register(benchmark) {
+    const name = benchmark.constructor.name;
+    window.mapboxglBenchmarks[name] = window.mapboxglBenchmarks[name] || {};
+    window.mapboxglBenchmarks[name][version] = benchmark;
 }
 
 import Layout from '../benchmarks/layout';
@@ -56,19 +34,19 @@ import ExpressionBenchmarks from '../benchmarks/expressions';
 import FilterCreate from '../benchmarks/filter_create';
 import FilterEvaluate from '../benchmarks/filter_evaluate';
 
-register(Layout);
-register(LayoutDDS);
-register(Paint);
-register(PaintStates);
-LayerBenchmarks.forEach(register);
-register(Load);
-register(Validate);
-register(StyleLayerCreate);
-register(QueryPoint);
-register(QueryBox);
-ExpressionBenchmarks.forEach(register);
-register(FilterCreate);
-register(FilterEvaluate);
+register(new Paint(style, locations));
+register(new QueryPoint(style, locations));
+register(new QueryBox(style, locations));
+register(new Layout(style));
+register(new Validate(style));
+register(new StyleLayerCreate(style));
+ExpressionBenchmarks.forEach((Bench) => register(new Bench(style)));
+register(new PaintStates(center));
+LayerBenchmarks.forEach((Bench) => register(new Bench(style)));
+register(new Load(style));
+register(new LayoutDDS(style));
+register(new FilterCreate(style));
+register(new FilterEvaluate(style));
 
 import getWorkerPool from '../../src/util/global_worker_pool';
 
