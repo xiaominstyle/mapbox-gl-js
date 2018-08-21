@@ -285,6 +285,7 @@ class BenchmarkStatistic extends React.Component {
 
 class BenchmarkRow extends React.Component {
     render() {
+        console.log('this.props.versions', this.props.versions);
         const endedCount = this.props.versions.filter(version => version.status === 'ended').length;
 
         let master;
@@ -391,8 +392,7 @@ export default class BenchmarksTable extends React.Component {
                         <span>Finished <button className='button fr icon share' onClick={this.share}>Share</button></span> :
                         <span>Running</span>}</h1>
                 {this.props.benchmarks.map((benchmark, i) => {
-                    const bench = benchmark.benchmark || benchmark;
-                    return <BenchmarkRow key={`${bench.name}-${i}`} {...bench}/>;
+                    return <BenchmarkRow key={`${benchmark.name}-${i}`} {...benchmark}/>;
                 })}
             </div>
         );
