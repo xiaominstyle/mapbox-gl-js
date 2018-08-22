@@ -5,37 +5,6 @@ import { summaryStatistics, regression } from './lib/statistics';
 
 export const benchmarks = [];
 
-let promise = Promise.resolve();
-
-export function setupTestRun(name, suite, testByLocation, loc) {
-    let finished = false;
-    const benchmark = { name, versions: [] };
-    benchmarks.push(benchmark);
-
-    for (const testName in suite) {
-        const version = {
-            name: testName,
-            status: 'waiting',
-            logs: [],
-            samples: [],
-            summary: {}
-        };
-        benchmark.versions.push(version);
-
-        promise = promise.then(() => {
-            version.status = 'running';
-            update();
-
-            return runTests(suite[testName], version);
-        });
-    }
-
-    promise = promise.then(() => {
-        finished = true;
-        update(finished);
-    });
-}
-
 export function runTests(test, version) {
     return test.run()
         .then(measurements => {

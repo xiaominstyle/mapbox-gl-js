@@ -78,10 +78,10 @@ import Paint from '../benchmarks/paint';
 import QueryPoint from '../benchmarks/query_point';
 import QueryBox from '../benchmarks/query_box';
 
-register(Layout);
-register(Paint);
 register(StyleLayerCreate);
 register(Validate);
+register(Layout);
+register(Paint);
 register(QueryPoint);
 register(QueryBox);
 

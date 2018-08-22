@@ -4,7 +4,6 @@ import mapboxgl from '../../src';
 import { accessToken } from '../lib/parameters';
 mapboxgl.accessToken = accessToken;
 
-window.mapboxglVersions = window.mapboxglVersions || [];
 window.mapboxglBenchmarks = window.mapboxglBenchmarks || {};
 
 const style = 'mapbox://styles/mapbox/streets-v10';
@@ -12,7 +11,6 @@ const center = [-77.032194, 38.912753];
 const zooms = [4, 8, 11, 13, 15, 17];
 const locations = zooms.map(zoom => ({center, zoom}));
 const version = process.env.BENCHMARK_VERSION;
-window.mapboxglVersions.push(version);
 
 function register(benchmark) {
     const name = benchmark.constructor.name;
