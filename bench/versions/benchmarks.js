@@ -2,6 +2,8 @@
 
 import mapboxgl from '../../src';
 import { accessToken } from '../lib/parameters';
+import { runTests, update, benchmarks } from '../benchmarks_shared_viewmodel';
+
 mapboxgl.accessToken = accessToken;
 
 window.mapboxglBenchmarks = window.mapboxglBenchmarks || {};
@@ -45,6 +47,41 @@ register(new Load(style));
 register(new LayoutDDS(style));
 register(new FilterCreate(style));
 register(new FilterEvaluate(style));
+
+const filter = window.location.hash.substr(1);
+let promise = Promise.resolve();
+
+for (const name in window.mapboxglBenchmarks) {
+    if (filter && name !== filter)
+        continue;
+
+    let finished = false;
+    const benchmark = { name, versions: [] };
+    benchmarks.push(benchmark);
+
+    for (const test in window.mapboxglBenchmarks[name]) {
+        const version = {
+            name: test,
+            status: 'waiting',
+            logs: [],
+            samples: [],
+            summary: {}
+        };
+        benchmark.versions.push(version);
+
+        promise = promise.then(() => {
+            version.status = 'running';
+            update();
+
+            return runTests(window.mapboxglBenchmarks[name][test], version);
+        });
+    }
+
+    promise = promise.then(() => {
+        finished = true;
+        update(finished);
+    });
+}
 
 import getWorkerPool from '../../src/util/global_worker_pool';
 
