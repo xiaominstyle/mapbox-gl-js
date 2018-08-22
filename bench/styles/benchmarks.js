@@ -2,14 +2,14 @@
 
 import mapboxgl from '../../src';
 import accessToken from '../lib/access_token';
-import { locations } from '../lib/style_locations';
-import { runTests, update, benchmarks } from '../benchmarks_controller';
+import locations from '../lib/style_locations';
+import { summaryStatistics, regression } from '../lib/statistics';
+import updateUI from '../benchmarks_view';
 
 mapboxgl.accessToken = accessToken;
 
 const urls = (process.env.MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/streets-v10').split(',');
-const filter = window.location.hash.substr(1);
-let promise = Promise.resolve();
+const benchmarks = [];
 
 function createBenchmark(Benchmark, locations, options) {
     const benchmark = {
@@ -31,6 +31,8 @@ function createBenchmark(Benchmark, locations, options) {
     });
     benchmarks.push(benchmark);
 }
+
+const filter = window.location.hash.substr(1);
 
 function register(Benchmark) {
   const name = Benchmark.name;
@@ -54,19 +56,36 @@ function register(Benchmark) {
     }
 }
 
+let promise = Promise.resolve();
+
 function runBenchmarks() {
     benchmarks.forEach(bench => {
         bench.versions.forEach(version => {
             promise = promise.then(() => {
                 version.status = 'running';
-                update();
+                updateUI(benchmarks);
 
-                return runTests(bench.bench, version);
+                return bench.bench.run()
+                    .then(measurements => {
+                        // scale measurements down by iteration count, so that
+                        // they represent (average) time for a single iteration
+                        const samples = measurements.map(({time, iterations}) => time / iterations);
+                        version.status = 'ended';
+                        version.samples = samples;
+                        version.summary = summaryStatistics(samples);
+                        version.regression = regression(measurements);
+                        updateUI(benchmarks);
+                    })
+                    .catch(error => {
+                        version.status = 'errored';
+                        version.error = error;
+                        updateUI(benchmarks);
+                    });
             });
         });
 
         promise = promise.then(() => {
-            update(true);
+            updateUI(benchmarks, true);
         });
     });
 }

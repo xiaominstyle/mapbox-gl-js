@@ -1,6 +1,6 @@
 import { OverscaledTileID } from '../../src/source/tile_id';
 
-const locations = [
+export default [
     {
         "description": "Road labels – Houston, z12",
         "tileID": [new OverscaledTileID(12, 0, 12, 962, 1692)],
@@ -92,5 +92,3 @@ const locations = [
         "center": [7.762074, 50.322133]
     }
 ];
-
-export { locations };

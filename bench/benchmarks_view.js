@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import * as d3 from 'd3';
 import Axis from './lib/axis';
 import { kde, probabilitiesOfSuperiority } from './lib/statistics';
@@ -375,7 +376,7 @@ class BenchmarkRow extends React.Component {
     }
 }
 
-export default class BenchmarksTable extends React.Component {
+class BenchmarksTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {sharing: false};
@@ -416,4 +417,13 @@ export default class BenchmarksTable extends React.Component {
             .then(response => response.json())
             .then(json => { window.location = `https://bl.ocks.org/anonymous/raw/${json.id}/`; });
     }
+}
+
+export default function updateUI(benchmarks, finished) {
+    finished = !!finished;
+
+    ReactDOM.render(
+        <BenchmarksTable benchmarks={benchmarks} finished={finished}/>,
+        document.getElementById('benchmarks')
+    );
 }

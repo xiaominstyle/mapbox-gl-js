@@ -2,7 +2,8 @@
 
 import mapboxgl from '../../src';
 import accessToken from '../lib/access_token';
-import { runTests, update, benchmarks } from '../benchmarks_controller';
+import { summaryStatistics, regression } from '../lib/statistics';
+import updateUI from '../benchmarks_view';
 
 mapboxgl.accessToken = accessToken;
 
@@ -17,6 +18,7 @@ function register(benchmark) {
 }
 
 function runBenchmarks() {
+  const benchmarks = [];
   const filter = window.location.hash.substr(1);
   let promise = Promise.resolve();
 
@@ -39,14 +41,29 @@ function runBenchmarks() {
 
       promise = promise.then(() => {
         version.status = 'running';
-        update();
+        updateUI(benchmarks);
 
-        return runTests(window.mapboxglBenchmarks[name][test], version);
+        return window.mapboxglBenchmarks[name][test].run()
+            .then(measurements => {
+                // scale measurements down by iteration count, so that
+                // they represent (average) time for a single iteration
+                const samples = measurements.map(({time, iterations}) => time / iterations);
+                version.status = 'ended';
+                version.samples = samples;
+                version.summary = summaryStatistics(samples);
+                version.regression = regression(measurements);
+                updateUI(benchmarks);
+            })
+            .catch(error => {
+                version.status = 'errored';
+                version.error = error;
+                updateUI(benchmarks);
+            });
       });
     }
 
     promise = promise.then(() => {
-      update(true);
+      updateUI(benchmarks, true);
     });
   }
 }
