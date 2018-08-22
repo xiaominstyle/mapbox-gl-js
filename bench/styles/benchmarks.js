@@ -1,9 +1,9 @@
 // @flow
 
 import mapboxgl from '../../src';
-import { accessToken } from '../lib/parameters';
+import accessToken from '../lib/access_token';
 import { locations } from '../lib/style_locations';
-import { runTests, update, benchmarks } from '../benchmarks_shared_viewmodel';
+import { runTests, update, benchmarks } from '../benchmarks_controller';
 
 mapboxgl.accessToken = accessToken;
 

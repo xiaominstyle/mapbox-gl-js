@@ -1,23 +1,54 @@
 // @flow
 
 import mapboxgl from '../../src';
-import { accessToken } from '../lib/parameters';
-import { runTests, update, benchmarks } from '../benchmarks_shared_viewmodel';
+import accessToken from '../lib/access_token';
+import { runTests, update, benchmarks } from '../benchmarks_controller';
 
 mapboxgl.accessToken = accessToken;
 
 window.mapboxglBenchmarks = window.mapboxglBenchmarks || {};
 
-const style = 'mapbox://styles/mapbox/streets-v10';
-const center = [-77.032194, 38.912753];
-const zooms = [4, 8, 11, 13, 15, 17];
-const locations = zooms.map(zoom => ({center, zoom}));
 const version = process.env.BENCHMARK_VERSION;
 
 function register(benchmark) {
     const name = benchmark.constructor.name;
     window.mapboxglBenchmarks[name] = window.mapboxglBenchmarks[name] || {};
     window.mapboxglBenchmarks[name][version] = benchmark;
+}
+
+function runBenchmarks() {
+  const filter = window.location.hash.substr(1);
+  let promise = Promise.resolve();
+
+  for (const name in window.mapboxglBenchmarks) {
+    if (filter && name !== filter)
+    continue;
+
+    const benchmark = { name, versions: [] };
+    benchmarks.push(benchmark);
+
+    for (const test in window.mapboxglBenchmarks[name]) {
+      const version = {
+        name: test,
+        status: 'waiting',
+        logs: [],
+        samples: [],
+        summary: {}
+      };
+      benchmark.versions.push(version);
+
+      promise = promise.then(() => {
+        version.status = 'running';
+        update();
+
+        return runTests(window.mapboxglBenchmarks[name][test], version);
+      });
+    }
+
+    promise = promise.then(() => {
+      update(true);
+    });
+  }
 }
 
 import Layout from '../benchmarks/layout';
@@ -34,6 +65,11 @@ import ExpressionBenchmarks from '../benchmarks/expressions';
 import FilterCreate from '../benchmarks/filter_create';
 import FilterEvaluate from '../benchmarks/filter_evaluate';
 
+const style = 'mapbox://styles/mapbox/streets-v10';
+const center = [-77.032194, 38.912753];
+const zooms = [4, 8, 11, 13, 15, 17];
+const locations = zooms.map(zoom => ({center, zoom}));
+
 register(new Paint(style, locations));
 register(new QueryPoint(style, locations));
 register(new QueryBox(style, locations));
@@ -48,40 +84,7 @@ register(new LayoutDDS(style));
 register(new FilterCreate(style));
 register(new FilterEvaluate(style));
 
-const filter = window.location.hash.substr(1);
-let promise = Promise.resolve();
-
-for (const name in window.mapboxglBenchmarks) {
-    if (filter && name !== filter)
-        continue;
-
-    let finished = false;
-    const benchmark = { name, versions: [] };
-    benchmarks.push(benchmark);
-
-    for (const test in window.mapboxglBenchmarks[name]) {
-        const version = {
-            name: test,
-            status: 'waiting',
-            logs: [],
-            samples: [],
-            summary: {}
-        };
-        benchmark.versions.push(version);
-
-        promise = promise.then(() => {
-            version.status = 'running';
-            update();
-
-            return runTests(window.mapboxglBenchmarks[name][test], version);
-        });
-    }
-
-    promise = promise.then(() => {
-        finished = true;
-        update(finished);
-    });
-}
+runBenchmarks();
 
 import getWorkerPool from '../../src/util/global_worker_pool';
 
