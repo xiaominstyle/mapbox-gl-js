@@ -20,7 +20,7 @@ function createBenchmark(Benchmark, locations, options) {
     if (options) Object.assign(benchmark, options);
 
     urls.forEach(style => {
-        benchmark.bench = new Benchmark(style, locations)
+        benchmark.bench = new Benchmark(style, locations);
         benchmark.versions.push({
             name: style,
             status: 'waiting',
@@ -35,10 +35,10 @@ function createBenchmark(Benchmark, locations, options) {
 const filter = window.location.hash.substr(1);
 
 function register(Benchmark) {
-  const name = Benchmark.name;
+    const name = Benchmark.name;
 
     if (filter && name !== filter)
-      return;
+        return;
 
     switch (name) {
     case 'Layout':
