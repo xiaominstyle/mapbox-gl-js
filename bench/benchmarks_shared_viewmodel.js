@@ -10,28 +10,19 @@ let promise = Promise.resolve();
 export function setupTestRun(name, suite, testByLocation, loc) {
     let finished = false;
     const benchmark = { name, versions: [] };
-    if (!testByLocation) {
-        benchmarks.push(benchmark);
-    }
+    benchmarks.push(benchmark);
+
     for (const testName in suite) {
-        let version;
-        if (testByLocation) {
-            // push a test object for each member of a test suite (style or version)
-            benchmarks.forEach(bench => {
-                bench.versions.push(createVersion(testName));
-            });
-        } else {
-            version = createVersion(testName);
-            benchmark.versions.push(version);
-        }
+        const version = {
+            name: testName,
+            status: 'waiting',
+            logs: [],
+            samples: [],
+            summary: {}
+        };
+        benchmark.versions.push(version);
 
         promise = promise.then(() => {
-            if (!version) {
-                // we have to find the correct version to update on each test run or else the UI will not update properly
-                const versions = benchmarks.filter(bench => bench.location && bench.location.description.toLowerCase().split(' ').join('_') === loc && bench.name === name)[0].versions;
-                version = versions.filter(version => version.name === testName)[0];
-            }
-
             version.status = 'running';
             update();
 
@@ -43,16 +34,6 @@ export function setupTestRun(name, suite, testByLocation, loc) {
         finished = true;
         update(finished);
     });
-}
-
-function createVersion(testName) {
-    return {
-        name: testName,
-        status: 'waiting',
-        logs: [],
-        samples: [],
-        summary: {}
-    };
 }
 
 export function runTests(test, version) {
