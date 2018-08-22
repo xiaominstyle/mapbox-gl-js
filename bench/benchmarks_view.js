@@ -285,7 +285,6 @@ class BenchmarkStatistic extends React.Component {
 
 class BenchmarkRow extends React.Component {
     render() {
-        console.log('this.props.versions', this.props.versions);
         const endedCount = this.props.versions.filter(version => version.status === 'ended').length;
 
         let master;

@@ -24,15 +24,14 @@ export function setupTestRun(name, suite, testByLocation, loc) {
             version = createVersion(testName);
             benchmark.versions.push(version);
         }
-        // console.log('version', name, version);
+
         promise = promise.then(() => {
             if (!version) {
-                // console.log('benchmarks', benchmarks);
                 // we have to find the correct version to update on each test run or else the UI will not update properly
                 const versions = benchmarks.filter(bench => bench.location && bench.location.description.toLowerCase().split(' ').join('_') === loc && bench.name === name)[0].versions;
                 version = versions.filter(version => version.name === testName)[0];
             }
-            // console.log('version', name, version);
+
             version.status = 'running';
             update();
 
@@ -57,8 +56,6 @@ function createVersion(testName) {
 }
 
 export function runTests(test, version) {
-    console.log('test', test);
-    console.log('version', version);
     return test.run()
         .then(measurements => {
             // scale measurements down by iteration count, so that
@@ -78,7 +75,6 @@ export function runTests(test, version) {
 }
 
 export function update(finished) {
-    console.log('benchmarks update', benchmarks);
     finished = !!finished;
 
     ReactDOM.render(

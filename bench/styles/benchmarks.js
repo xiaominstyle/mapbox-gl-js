@@ -7,10 +7,7 @@ import { runTests, update, benchmarks } from '../benchmarks_shared_viewmodel';
 
 mapboxgl.accessToken = accessToken;
 
-window.mapboxglBenchmarks = window.mapboxglBenchmarks || {};
-
 const urls = (process.env.MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/streets-v10').split(',');
-// const benchmarks = [];
 let promise = Promise.resolve();
 
 function createBenchmark(Benchmark, locations, options) {
@@ -37,70 +34,35 @@ function createBenchmark(Benchmark, locations, options) {
 function register(Benchmark) {
     const name = Benchmark.name;
     switch (name) {
-      case 'Layout':
-      case 'Paint':
+    case 'Layout':
+    case 'Paint':
         locations.forEach(location => {
-          createBenchmark(Benchmark, [location], {location});
+            createBenchmark(Benchmark, [location], {location});
         });
         break;
-      case 'QueryBox':
-      case 'QueryPoint':
+    case 'QueryBox':
+    case 'QueryPoint':
         createBenchmark(Benchmark, locations);
         break;
-      default:
+    default:
         createBenchmark(Benchmark);
     }
-
-    console.log('benchmarks', benchmarks);
-
-    // sort by the style urls instead of the branch name so that a style benchmark can run the same branch multiple times with differing style urls
-    // urls.forEach((style) => {
-    //     if (!window.mapboxglBenchmarks[name]) {
-    //         window.mapboxglBenchmarks[name] = {};
-    //     }
-    //
-    //     switch (name) {
-    //     case 'Layout':
-    //     case 'Paint':
-    //         // create tests for each location/tile
-    //         // we do this because with styles, it's important to see how a style responds on various types of tiles
-    //         // (e.g. CJK, dense urban, rural, etc) rather than averaging all tiles together into one result
-    //         locations.forEach(location => {
-    //             const descriptor = location.description.toLowerCase().split(' ').join('_');
-    //             if (!window.mapboxglBenchmarks[name][descriptor]) {
-    //                 window.mapboxglBenchmarks[name][descriptor] = {};
-    //             }
-    //             window.mapboxglBenchmarks[name][descriptor][style] = new Benchmark(style, [location]);
-    //         });
-    //         break;
-    //     case 'QueryBox':
-    //     case 'QueryPoint':
-    //         // QueryBox and QueryPoint need the locations but do not need to be processed per-location (e.g. can be averaged into one test) so we can can just process them as normal
-    //         window.mapboxglBenchmarks[name][style] = new Benchmark(style, locations);
-    //         break;
-    //     // default case covers StyleLayerCreate and StyleValidate
-    //     // StyleLayerCreate and StyleValidate are important for benching styles but are not location dependent so process them like normal bench tests
-    //     default:
-    //         window.mapboxglBenchmarks[name][style] = new Benchmark(style);
-    //     }
-    // });
-    // console.log('window.mapboxglBenchmarks', window.mapboxglBenchmarks);
 }
 
 function runBenchmarks() {
     benchmarks.forEach(bench => {
-      bench.versions.forEach(version => {
-        promise = promise.then(() => {
-          version.status = 'running';
-          update();
+        bench.versions.forEach(version => {
+            promise = promise.then(() => {
+                version.status = 'running';
+                update();
 
-          return runTests(bench.bench, version);
+                return runTests(bench.bench, version);
+            });
         });
-      });
 
-      promise = promise.then(() => {
-          update(true);
-      });
+        promise = promise.then(() => {
+            update(true);
+        });
     });
 }
 
