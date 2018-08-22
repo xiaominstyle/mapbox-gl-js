@@ -8,6 +8,7 @@ import { runTests, update, benchmarks } from '../benchmarks_shared_viewmodel';
 mapboxgl.accessToken = accessToken;
 
 const urls = (process.env.MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/streets-v10').split(',');
+const filter = window.location.hash.substr(1);
 let promise = Promise.resolve();
 
 function createBenchmark(Benchmark, locations, options) {
@@ -32,7 +33,11 @@ function createBenchmark(Benchmark, locations, options) {
 }
 
 function register(Benchmark) {
-    const name = Benchmark.name;
+  const name = Benchmark.name;
+
+    if (filter && name !== filter)
+      return;
+
     switch (name) {
     case 'Layout':
     case 'Paint':
