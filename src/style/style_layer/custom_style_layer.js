@@ -139,8 +139,8 @@ export type CustomLayerInterface = {
     renderingMode: "2d" | "3d",
     render: CustomRenderMethod,
     prerender: ?CustomRenderMethod,
-    onAdd: (map: Map, gl: WebGLRenderingContext) => void,
-    onRemove(map: Map): void
+    onAdd: ?(map: Map, gl: WebGLRenderingContext) => void,
+    onRemove: ?(map: Map) => void
 }
 
 export function validateCustomStyleLayer(layerObject: CustomLayerInterface) {
