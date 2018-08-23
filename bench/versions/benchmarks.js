@@ -1,5 +1,3 @@
-// @flow
-
 import mapboxgl from '../../src';
 import accessToken from '../lib/access_token';
 import { summaryStatistics, regression } from '../lib/statistics';
@@ -95,11 +93,11 @@ register(new Validate(style));
 register(new StyleLayerCreate(style));
 ExpressionBenchmarks.forEach((Bench) => register(new Bench(style)));
 register(new PaintStates(center));
-LayerBenchmarks.forEach((Bench) => register(new Bench(style)));
-register(new Load(style));
-register(new LayoutDDS(style));
-register(new FilterCreate(style));
-register(new FilterEvaluate(style));
+LayerBenchmarks.forEach((Bench) => register(new Bench()));
+register(new Load());
+register(new LayoutDDS());
+register(new FilterCreate());
+register(new FilterEvaluate());
 
 runBenchmarks();
 

@@ -22,11 +22,13 @@ export default class Layout extends Benchmark {
     workerTile: WorkerTile;
     layerIndex: StyleLayerIndex;
     tiles: Array<{tileID: OverscaledTileID, buffer: ArrayBuffer}>;
+    style: string;
+    locations: Array<OverscaledTileID>;
 
-    constructor(style, tiles) {
+    constructor(style: string, locations: ?Array<OverscaledTileID>) {
         super();
         this.style = style;
-        this.locations = tiles ? tiles[0].tileID : this.tileIDs();
+        this.locations = locations || this.tileIDs();
     }
 
     tileIDs(): Array<OverscaledTileID> {

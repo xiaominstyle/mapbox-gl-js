@@ -19,8 +19,9 @@ class ExpressionBenchmark extends Benchmark {
         compiledFunction: StylePropertyExpression,
         compiledExpression: StylePropertyExpression
     }>;
+    style: string;
 
-    constructor(style) {
+    constructor(style: string) {
         super();
         this.style = style;
     }

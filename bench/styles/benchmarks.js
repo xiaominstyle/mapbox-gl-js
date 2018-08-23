@@ -1,5 +1,3 @@
-// @flow
-
 import mapboxgl from '../../src';
 import accessToken from '../lib/access_token';
 import locations from '../lib/style_locations';
@@ -44,7 +42,8 @@ function register(Benchmark) {
     case 'Layout':
     case 'Paint':
         locations.forEach(location => {
-            createBenchmark(Benchmark, [location], {location});
+            const loc = name === 'Layout' ? location.tileID : [location];
+            createBenchmark(Benchmark, loc, {location});
         });
         break;
     case 'QueryBox':
