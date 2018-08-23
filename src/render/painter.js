@@ -332,6 +332,9 @@ class Painter {
         this.renderPass = 'offscreen';
         this.depthRboNeedsClear = true;
 
+        // Disable face culling when rendering offscreen.
+        this.context.setCullFace(false);
+
         for (const layerId of layerIds) {
             const layer = this.style._layers[layerId];
             if (!layer.hasOffscreenPass() || layer.isHidden(this.transform.zoom)) continue;
@@ -347,6 +350,9 @@ class Painter {
 
         // Clear buffers in preparation for drawing to the main framebuffer
         this.context.clear({ color: options.showOverdrawInspector ? Color.black : Color.transparent, depth: 1 });
+
+        // Enable face culling for rendering only front-facing triangles.
+        this.context.setCullFace(true);
 
         this._showOverdrawInspector = options.showOverdrawInspector;
         this.depthRange = (style._order.length + 2) * this.numSublayers * this.depthEpsilon;
